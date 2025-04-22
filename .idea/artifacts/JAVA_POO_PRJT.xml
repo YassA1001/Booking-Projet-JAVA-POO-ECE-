@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="JAVA-POO-PRJT">
+    <output-path>$PROJECT_DIR$/out/artifacts/JAVA_POO_PRJT</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="JAVA POO PRJT" />
+          <element id="dir-copy" path="$PROJECT_DIR$/out/production/JAVA POO PRJT" />
+        </element>
+        <element id="module-output" name="JAVA POO PRJT" />
+      </element>
+    </root>
+  </artifact>
+</component>
