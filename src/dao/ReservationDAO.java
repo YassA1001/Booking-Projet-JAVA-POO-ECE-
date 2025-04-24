@@ -1,5 +1,3 @@
-// Méthode à ajouter dans ReservationDAO.java
-
 package dao;
 
 import model.Client;
@@ -14,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReservationDAO {
-
-    // ... méthode enregistrerReservation() déjà présente ...
 
     public List<Reservation> findByClientId(int clientId) {
         List<Reservation> reservations = new ArrayList<>();
@@ -38,7 +34,8 @@ public class ReservationDAO {
                 int nbEnfants = rs.getInt("nb_enfants");
 
                 Hebergement hebergement = hebergementDAO.findById(idHebergement);
-                Client client = new Client(clientId, "", "", "", false); // données minimales nécessaires
+                // ✅ Ajout du type pour correspondre au constructeur de Client
+                Client client = new Client(clientId, "", "", "", "client", false);
 
                 reservations.add(new Reservation(id, client, hebergement, dateArrivee, dateDepart, nbAdultes, nbEnfants));
             }
@@ -49,6 +46,7 @@ public class ReservationDAO {
 
         return reservations;
     }
+
     public boolean enregistrerReservation(Reservation reservation) {
         String sql = "INSERT INTO reservation (id_client, id_hebergement, date_arrivee, date_depart, nb_adultes, nb_enfants) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
@@ -70,5 +68,4 @@ public class ReservationDAO {
             return false;
         }
     }
-
 }
