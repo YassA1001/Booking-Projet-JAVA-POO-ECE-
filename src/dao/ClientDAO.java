@@ -39,4 +39,54 @@ public class ClientDAO {
 
         return client;
     }
+
+    // ✅ Nouvelle méthode à ajouter :
+    public void ensureClientExists(int userId) {
+        String checkSql = "SELECT COUNT(*) FROM client WHERE id_client = ?";
+        String insertSql = "INSERT INTO client (id_client, est_ancien) VALUES (?, false)";
+
+        try (Connection conn = ConnexionDB.getConnection()) {
+            // Vérification
+            PreparedStatement checkStmt = conn.prepareStatement(checkSql);
+            checkStmt.setInt(1, userId);
+            ResultSet rs = checkStmt.executeQuery();
+            rs.next();
+
+            if (rs.getInt(1) == 0) {
+                // Insertion si absent
+                PreparedStatement insertStmt = conn.prepareStatement(insertSql);
+                insertStmt.setInt(1, userId);
+                insertStmt.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la vérification/ajout du client : " + e.getMessage());
+        }
+    }
+
+    public boolean updateClient(int clientId, String newNom, String newEmail, String newMdp) {
+            String sql = "UPDATE utilisateur SET nom = ?, email = ?, mot_de_passe = ? WHERE id = ?";
+
+            try (Connection conn = ConnexionDB.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+                stmt.setString(1, newNom);
+                stmt.setString(2, newEmail);
+                stmt.setString(3, newMdp);
+                stmt.setInt(4, clientId);
+
+                int rowsUpdated = stmt.executeUpdate();
+                return rowsUpdated > 0;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+    public static class updateclient {
+        public updateclient(int id, String newNom, String newEmail, String newMdp) {
+        }
+    }
 }
+

@@ -6,7 +6,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.Client;
+import model.Utilisateur;
+import utils.Session;
+import utils.SessionManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,14 +19,18 @@ import java.sql.ResultSet;
 
 public class LoginView {
 
-    public static void afficher(Stage primaryStage) {
-        primaryStage.setTitle("Connexion");
+    public static boolean afficher() {
+        final boolean[] authenticated = {false};
+
+        Stage loginStage = new Stage();
+        loginStage.initModality(Modality.APPLICATION_MODAL);
+        loginStage.setTitle("Connexion");
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
+        grid.setPadding(new Insets(25));
 
         Label emailLabel = new Label("Email :");
         TextField emailField = new TextField();
@@ -53,9 +62,27 @@ public class LoginView {
                 ResultSet rs = stmt.executeQuery();
 
                 if (rs.next()) {
-                    messageLabel.setText("Connexion réussie !");
-                    primaryStage.close();
-                    new Accueil().start(new Stage());
+                    Utilisateur u = new Utilisateur(
+                            rs.getInt("id"),
+                            rs.getString("nom"),
+                            rs.getString("email"),
+                            rs.getString("mot_de_passe"),
+                            rs.getString("type")
+                    );
+                    Session.setUtilisateur(u);
+
+                    // AJOUT IMPORTANT POUR MES RESERVATIONS
+                    SessionManager.setClient(new Client(
+                            u.getId(),
+                            u.getNom(),
+                            u.getEmail(),
+                            u.getMotDePasse(),
+                            u.getType(),
+                            false // pas ancien par défaut
+                    ));
+
+                    authenticated[0] = true;
+                    loginStage.close();
                 } else {
                     messageLabel.setText("Email ou mot de passe incorrect");
                 }
@@ -65,10 +92,12 @@ public class LoginView {
             }
         });
 
-        signupBtn.setOnAction(e -> SignupView.afficher(primaryStage));
+        signupBtn.setOnAction(e -> SignupView.afficher());
 
         Scene scene = new Scene(grid, 400, 300);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        loginStage.setScene(scene);
+        loginStage.showAndWait();
+
+        return authenticated[0];
     }
 }

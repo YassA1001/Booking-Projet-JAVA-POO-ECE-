@@ -1,29 +1,31 @@
-// ClientDashboard.java
 package view;
 
 import dao.HebergementDAO;
 import model.Hebergement;
-
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 
 public class ClientDashboard extends JFrame {
+    private ReservationPanel reservationPanel = new ReservationPanel(this);
 
     public ClientDashboard(String nomClient) {
         setTitle("Espace Client - Booking App");
-        setSize(800, 550);
+        setSize(1000, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         JLabel welcomeLabel = new JLabel("Bienvenue, " + nomClient + " !", SwingConstants.CENTER);
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        panel.add(welcomeLabel, BorderLayout.NORTH);
+        mainPanel.add(welcomeLabel, BorderLayout.NORTH);
 
         String[] columns = {"Nom", "Type", "Prix", "Adresse", "Capacité"};
         DefaultTableModel tableModel = new DefaultTableModel(columns, 0);
@@ -55,15 +57,26 @@ public class ClientDashboard extends JFrame {
         });
 
         JButton voirReservationsBtn = new JButton("Mes Réservations");
-        voirReservationsBtn.addActionListener(e -> new MesReservations().setVisible(true));
+        voirReservationsBtn.addActionListener(e -> afficherReservations());
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         bottomPanel.add(reserverBtn);
         bottomPanel.add(voirReservationsBtn);
 
-        panel.add(scrollPane, BorderLayout.CENTER);
-        panel.add(bottomPanel, BorderLayout.SOUTH);
-        add(panel);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        add(mainPanel);
+    }
+
+    private void afficherReservations() {
+        if (reservationPanel != null) {
+            remove(reservationPanel);
+        }
+        add(reservationPanel, BorderLayout.EAST);
+        revalidate();
+        repaint();
+        reservationPanel.slideIn(this);
     }
 
     public static void main(String[] args) {

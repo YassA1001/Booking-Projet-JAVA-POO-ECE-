@@ -4,72 +4,101 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.Utilisateur;
-import dao.UtilisateurDAO;
+import utils.ConnexionDB;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class SignupView {
-    public static void afficher(Stage owner) {
-        Stage dialog = new Stage();
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.initOwner(owner);
-        dialog.setTitle("Inscription");
 
-        Label nomLabel = new Label("Nom :");
+    public static void afficher() {
+        Stage signupStage = new Stage();
+        signupStage.initModality(Modality.APPLICATION_MODAL);
+        signupStage.setTitle("Inscription");
+
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25));
+
         TextField nomField = new TextField();
-
-        Label emailLabel = new Label("Email :");
         TextField emailField = new TextField();
+        PasswordField motDePasseField = new PasswordField();
+        ComboBox<String> typeComboBox = new ComboBox<>();
+        typeComboBox.getItems().addAll("client", "admin");
+        typeComboBox.setValue("client");
 
-        Label mdpLabel = new Label("Mot de passe :");
-        PasswordField mdpField = new PasswordField();
+        Button inscrireBtn = new Button("S'inscrire");
 
-        Label confirmLabel = new Label("Confirmer le mot de passe :");
-        PasswordField confirmField = new PasswordField();
+        grid.add(new Label("Nom :"), 0, 0);
+        grid.add(nomField, 1, 0);
+        grid.add(new Label("Email :"), 0, 1);
+        grid.add(emailField, 1, 1);
+        grid.add(new Label("Mot de passe :"), 0, 2);
+        grid.add(motDePasseField, 1, 2);
+        grid.add(new Label("Type :"), 0, 3);
+        grid.add(typeComboBox, 1, 3);
+        grid.add(inscrireBtn, 1, 4);
 
-        Label typeLabel = new Label("Type :");
-        ComboBox<String> typeBox = new ComboBox<>();
-        typeBox.getItems().addAll("client", "admin");
-        typeBox.setValue("client");
-
-        Button validerBtn = new Button("Valider");
-        validerBtn.setOnAction(e -> {
+        inscrireBtn.setOnAction(e -> {
             String nom = nomField.getText();
             String email = emailField.getText();
-            String mdp = mdpField.getText();
-            String confirm = confirmField.getText();
-            String type = typeBox.getValue();
+            String motDePasse = motDePasseField.getText();
+            String type = typeComboBox.getValue();
 
-            if (!mdp.equals(confirm)) {
-                showAlert("Erreur", "Les mots de passe ne correspondent pas.");
+            if (nom.isEmpty() || email.isEmpty() || motDePasse.isEmpty() || type.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Veuillez remplir tous les champs !");
+                alert.showAndWait();
                 return;
             }
 
-            Utilisateur utilisateur = new Utilisateur(nom, email, mdp, type);
-            boolean success = UtilisateurDAO.ajouterUtilisateur(utilisateur);
-            if (success) {
-                showAlert("Succès", "Utilisateur inscrit avec succès.");
-                dialog.close();
-            } else {
-                showAlert("Erreur", "Échec de l'inscription.");
+            try (Connection conn = ConnexionDB.getConnection()) {
+                String sql = "INSERT INTO utilisateur (nom, email, mot_de_passe, type) VALUES (?, ?, ?, ?)";
+                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                stmt.setString(1, nom);
+                stmt.setString(2, email);
+                stmt.setString(3, motDePasse);
+                stmt.setString(4, type);
+
+                int rows = stmt.executeUpdate();
+
+                if (rows > 0) {
+                    ResultSet rs = stmt.getGeneratedKeys();
+                    if (rs.next()) {
+                        int idUtilisateur = rs.getInt(1);
+
+                        if (type.equals("client")) {
+                            String sqlClient = "INSERT INTO client (id_client, est_ancien) VALUES (?, ?)";
+                            PreparedStatement stmtClient = conn.prepareStatement(sqlClient);
+                            stmtClient.setInt(1, idUtilisateur);
+                            stmtClient.setBoolean(2, false);
+                            stmtClient.executeUpdate();
+                        }
+                    }
+
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Inscription réussie !");
+                    alert.showAndWait();
+                    signupStage.close();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur d'inscription.");
+                    alert.showAndWait();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Erreur base de données : " + ex.getMessage());
+                alert.showAndWait();
             }
         });
 
-        VBox layout = new VBox(10, nomLabel, nomField, emailLabel, emailField, mdpLabel, mdpField, confirmLabel, confirmField, typeLabel, typeBox, validerBtn);
-        layout.setPadding(new Insets(20));
-        layout.setAlignment(Pos.CENTER);
-
-        Scene scene = new Scene(layout, 350, 450);
-        dialog.setScene(scene);
-        dialog.showAndWait();
-    }
-
-    private static void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
+        Scene scene = new Scene(grid, 400, 300);
+        signupStage.setScene(scene);
+        signupStage.showAndWait();
     }
 }

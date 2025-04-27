@@ -28,7 +28,8 @@ public class HebergementDAO {
                         rs.getString("adresse"),
                         rs.getInt("nb_chambres"),
                         rs.getInt("nb_adultes"),
-                        rs.getInt("nb_enfants")
+                        rs.getInt("nb_enfants"),
+                        rs.getString("image")
                 );
                 list.add(h);
             }
@@ -59,7 +60,8 @@ public class HebergementDAO {
                         rs.getString("adresse"),
                         rs.getInt("nb_chambres"),
                         rs.getInt("nb_adultes"),
-                        rs.getInt("nb_enfants")
+                        rs.getInt("nb_enfants"),
+                        rs.getString("image")
                 );
             }
         } catch (SQLException e) {
@@ -69,9 +71,9 @@ public class HebergementDAO {
         return h;
     }
 
-    public boolean addHebergement(Hebergement h) {
-        String sql = "INSERT INTO hebergement (nom, type, description, prix_par_nuit, adresse, nb_chambres, nb_adultes, nb_enfants) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public boolean ajouter(Hebergement h) {
+        String sql = "INSERT INTO hebergement (nom, type, description, prix_par_nuit, adresse, nb_chambres, nb_adultes, nb_enfants, image) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -84,6 +86,7 @@ public class HebergementDAO {
             stmt.setInt(6, h.getNbChambres());
             stmt.setInt(7, h.getNbAdultes());
             stmt.setInt(8, h.getNbEnfants());
+            stmt.setString(9, h.getImage());
 
             int rows = stmt.executeUpdate();
             return rows > 0;
@@ -92,6 +95,7 @@ public class HebergementDAO {
             return false;
         }
     }
+
     public boolean deleteById(int id) {
         String sql = "DELETE FROM hebergement WHERE id = ?";
 

@@ -1,13 +1,13 @@
+// ReservationDAO.java
 package dao;
 
-import model.Client;
 import model.Hebergement;
 import model.Reservation;
 import utils.ConnexionDB;
-import dao.HebergementDAO;
 
-import java.sql.*;
-import java.time.LocalDate;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,32 +15,50 @@ public class ReservationDAO {
 
     public List<Reservation> findByClientId(int clientId) {
         List<Reservation> reservations = new ArrayList<>();
-        String sql = "SELECT * FROM reservation WHERE id_client = ?";
+
+        String sql = """
+            SELECT r.id, r.date_arrivee, r.date_depart, r.nb_adultes, r.nb_enfants,
+                   h.id AS hebergement_id, h.nom AS hebergement_nom, h.type, h.prix_par_nuit, 
+                   h.adresse, h.nb_chambres, h.nb_adultes, h.nb_enfants, h.image
+            FROM reservation r
+            JOIN hebergement h ON r.id_hebergement = h.id
+            WHERE r.id_client = ?
+        """;
 
         try (Connection conn = ConnexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, clientId);
-            ResultSet rs = stmt.executeQuery();
 
-            HebergementDAO hebergementDAO = new HebergementDAO();
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Hebergement hebergement = new Hebergement(
+                            rs.getInt("hebergement_id"),
+                            rs.getString("hebergement_nom"),
+                            rs.getString("type"),
+                            rs.getDouble("prix_par_nuit"),
+                            rs.getString("adresse"),
+                            rs.getInt("nb_chambres"),
+                            rs.getInt("nb_adultes"),
+                            rs.getInt("nb_enfants"),
+                            rs.getString("image")
+                    );
 
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                int idHebergement = rs.getInt("id_hebergement");
-                LocalDate dateArrivee = rs.getDate("date_arrivee").toLocalDate();
-                LocalDate dateDepart = rs.getDate("date_depart").toLocalDate();
-                int nbAdultes = rs.getInt("nb_adultes");
-                int nbEnfants = rs.getInt("nb_enfants");
+                    Reservation reservation = new Reservation(
+                            rs.getInt("id"),
+                            null, // on met null pour le client
+                            hebergement,
+                            rs.getDate("date_arrivee").toLocalDate(),
+                            rs.getDate("date_depart").toLocalDate(),
+                            rs.getInt("nb_adultes"),
+                            rs.getInt("nb_enfants")
+                    );
 
-                Hebergement hebergement = hebergementDAO.findById(idHebergement);
-                // ✅ Ajout du type pour correspondre au constructeur de Client
-                Client client = new Client(clientId, "", "", "", "client", false);
-
-                reservations.add(new Reservation(id, client, hebergement, dateArrivee, dateDepart, nbAdultes, nbEnfants));
+                    reservations.add(reservation);
+                }
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -48,22 +66,22 @@ public class ReservationDAO {
     }
 
     public boolean enregistrerReservation(Reservation reservation) {
-        String sql = "INSERT INTO reservation (id_client, id_hebergement, date_arrivee, date_depart, nb_adultes, nb_enfants) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO reservation (id_client, id_hebergement, date_arrivee, date_depart, nb_adultes, nb_enfants) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = ConnexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, reservation.getClient().getId());
             stmt.setInt(2, reservation.getHebergement().getId());
-            stmt.setDate(3, Date.valueOf(reservation.getDateArrivee()));
-            stmt.setDate(4, Date.valueOf(reservation.getDateDepart()));
+            stmt.setDate(3, java.sql.Date.valueOf(reservation.getDateArrivee()));
+            stmt.setDate(4, java.sql.Date.valueOf(reservation.getDateDepart()));
             stmt.setInt(5, reservation.getNbAdultes());
             stmt.setInt(6, reservation.getNbEnfants());
 
-            int rows = stmt.executeUpdate();
-            return rows > 0;
-        } catch (SQLException e) {
+            int rowsInserted = stmt.executeUpdate();
+            return rowsInserted > 0;
+
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

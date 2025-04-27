@@ -68,7 +68,7 @@ public class AdminDashboard extends JFrame {
         });
 
         logoutBtn.addActionListener(e -> {
-            SessionManager.deconnexion();
+            SessionManager.clearSession();
             dispose();
             new LoginForm().setVisible(true);
         });

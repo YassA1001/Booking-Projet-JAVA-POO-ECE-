@@ -11,7 +11,7 @@ public class HebergementForm extends JFrame {
 
     public HebergementForm(Runnable onSuccess) {
         setTitle("Ajouter un hébergement");
-        setSize(400, 500);
+        setSize(400, 550);
         setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new GridLayout(10, 2, 10, 10));
@@ -25,6 +25,7 @@ public class HebergementForm extends JFrame {
         JTextField chambresField = new JTextField();
         JTextField adultesField = new JTextField();
         JTextField enfantsField = new JTextField();
+        JTextField imageField = new JTextField();  // <-- Ajout du champ image
 
         JLabel message = new JLabel();
         JButton ajouterBtn = new JButton("Ajouter");
@@ -40,11 +41,12 @@ public class HebergementForm extends JFrame {
                         adresseField.getText(),
                         Integer.parseInt(chambresField.getText()),
                         Integer.parseInt(adultesField.getText()),
-                        Integer.parseInt(enfantsField.getText())
+                        Integer.parseInt(enfantsField.getText()),
+                        imageField.getText() // <-- Ajout de l'image ici
                 );
 
                 HebergementDAO dao = new HebergementDAO();
-                boolean success = dao.addHebergement(h);
+                boolean success = dao.ajouter(h);
 
                 if (success) {
                     message.setText("✅ Ajout réussi !");
@@ -66,6 +68,7 @@ public class HebergementForm extends JFrame {
         panel.add(new JLabel("Nb chambres")); panel.add(chambresField);
         panel.add(new JLabel("Nb adultes")); panel.add(adultesField);
         panel.add(new JLabel("Nb enfants")); panel.add(enfantsField);
+        panel.add(new JLabel("Image (chemin)")); panel.add(imageField); // <-- Nouveau champ image
         panel.add(ajouterBtn); panel.add(message);
 
         add(panel);

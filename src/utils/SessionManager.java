@@ -2,9 +2,20 @@
 package utils;
 
 import model.Client;
+import model.Utilisateur;
 
 public class SessionManager {
+
+    private static Utilisateur utilisateurConnecte;
     private static Client clientConnecte;
+
+    public static void setUtilisateur(Utilisateur utilisateur) {
+        utilisateurConnecte = utilisateur;
+    }
+
+    public static Utilisateur getUtilisateur() {
+        return utilisateurConnecte;
+    }
 
     public static void setClient(Client client) {
         clientConnecte = client;
@@ -14,11 +25,8 @@ public class SessionManager {
         return clientConnecte;
     }
 
-    public static boolean estConnecte() {
-        return clientConnecte != null;
-    }
-
-    public static void deconnexion() {
+    public static void clearSession() {
+        utilisateurConnecte = null;
         clientConnecte = null;
     }
 }

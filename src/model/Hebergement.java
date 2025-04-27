@@ -11,18 +11,24 @@ public class Hebergement {
     private int nbChambres;
     private int nbAdultes;
     private int nbEnfants;
+    private String image;
 
-    public Hebergement(int id, String nom, String type, String description, double prixParNuit, String adresse,
-                       int nbChambres, int nbAdultes, int nbEnfants) {
+
+    public Hebergement(int id, String nom, String type, double prixParNuit, String adresse, int nbChambres, int nbAdultes, int nbEnfants, String image) {
         this.id = id;
         this.nom = nom;
         this.type = type;
-        this.description = description;
         this.prixParNuit = prixParNuit;
         this.adresse = adresse;
         this.nbChambres = nbChambres;
         this.nbAdultes = nbAdultes;
         this.nbEnfants = nbEnfants;
+        this.image = image;
+    }
+    public Hebergement() {
+    }
+
+    public Hebergement(int id, String titre, String type, String descriptionGénérique, double prixParNuit, String adresse, int nbAdultes, int nbEnfants, int i, String imagePath) {
     }
 
     public int getId() { return id; }
@@ -51,6 +57,14 @@ public class Hebergement {
 
     public int getNbEnfants() { return nbEnfants; }
     public void setNbEnfants(int nbEnfants) { this.nbEnfants = nbEnfants; }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public boolean estDisponible() {
         // À implémenter plus tard avec les réservations
