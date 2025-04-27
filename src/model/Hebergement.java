@@ -12,6 +12,8 @@ public class Hebergement {
     private int nbAdultes;
     private int nbEnfants;
     private String image;
+    private int nbEtoiles;
+    private String repas;
 
 
     public Hebergement(int id, String nom, String type, double prixParNuit, String adresse, int nbChambres, int nbAdultes, int nbEnfants, String image) {
@@ -73,5 +75,20 @@ public class Hebergement {
 
     public String toString() {
         return nom + " - " + type + " - " + prixParNuit + "€/nuit";
+    }
+    public int getNbEtoiles() {
+        return nbEtoiles;
+    }
+
+    public void setNbEtoiles(int nbEtoiles) {
+        this.nbEtoiles = nbEtoiles;
+    }
+
+    public String getRepas() {
+        return repas;
+    }
+
+    public void setRepas(String repas) {
+        this.repas = repas;
     }
 }

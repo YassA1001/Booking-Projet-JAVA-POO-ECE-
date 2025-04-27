@@ -4,6 +4,7 @@ package dao;
 import model.Hebergement;
 import model.Reservation;
 import utils.ConnexionDB;
+import utils.SessionManager; // 🔥 Ajoute cette importation
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,7 +20,8 @@ public class ReservationDAO {
         String sql = """
             SELECT r.id, r.date_arrivee, r.date_depart, r.nb_adultes, r.nb_enfants,
                    h.id AS hebergement_id, h.nom AS hebergement_nom, h.type, h.prix_par_nuit, 
-                   h.adresse, h.nb_chambres, h.nb_adultes, h.nb_enfants, h.image
+                   h.adresse, h.nb_chambres, h.nb_adultes, h.nb_enfants, h.image,
+                   h.nb_etoiles, h.repas
             FROM reservation r
             JOIN hebergement h ON r.id_hebergement = h.id
             WHERE r.id_client = ?
@@ -43,10 +45,12 @@ public class ReservationDAO {
                             rs.getInt("nb_enfants"),
                             rs.getString("image")
                     );
+                    hebergement.setNbEtoiles(rs.getInt("nb_etoiles"));
+                    hebergement.setRepas(rs.getString("repas"));
 
                     Reservation reservation = new Reservation(
                             rs.getInt("id"),
-                            null, // on met null pour le client
+                            SessionManager.getClient(), // ✅ ici on récupère le client connecté
                             hebergement,
                             rs.getDate("date_arrivee").toLocalDate(),
                             rs.getDate("date_depart").toLocalDate(),

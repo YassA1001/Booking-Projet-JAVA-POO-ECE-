@@ -10,34 +10,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9e28d658-0dbb-41c0-aaed-96ae61d71675" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/utils/FactureGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/Session.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/view/AjoutHebergementView.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/view/ButtonEditor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/view/ButtonRenderer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/view/DetailLogement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/view/Logements.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/view/MainApp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/view/ProfilForm.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/view/ReservationPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JAVA POO PRJT.iml" beforeDir="false" afterPath="$PROJECT_DIR$/JAVA POO PRJT.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TestUtilisateur.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dao/ClientDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/dao/ClientDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dao/HebergementDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/dao/HebergementDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/dao/ReservationDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/dao/ReservationDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/Hebergement.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Hebergement.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Reservation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Reservation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/Utilisateur.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/Utilisateur.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/SessionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/SessionManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/view/Accueil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/Accueil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/view/AdminDashboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/AdminDashboard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/view/ClientDashboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/ClientDashboard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/view/HebergementForm.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/HebergementForm.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/view/LoginView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/LoginView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/view/MesReservations.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/MesReservations.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/view/SignupView.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/SignupView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/view/main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/view/Logements.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/view/Logements.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -196,7 +172,7 @@
       <workItem from="1745718543666" duration="1926000" />
       <workItem from="1745750020939" duration="5580000" />
       <workItem from="1745763517330" duration="4108000" />
-      <workItem from="1745787094062" duration="660000" />
+      <workItem from="1745787094062" duration="4487000" />
     </task>
     <servers />
   </component>

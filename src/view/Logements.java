@@ -83,7 +83,7 @@ public class Logements {
             String user = "root";
             String password = "";
 
-            String sql = "SELECT id, nom, adresse, prix_par_nuit, image, description FROM hebergement WHERE LOWER(adresse) LIKE ? AND nb_adultes >= ? AND nb_enfants >= ?";
+            String sql = "SELECT id, nom, adresse, prix_par_nuit, image, description, nb_etoiles, repas FROM hebergement WHERE LOWER(adresse) LIKE ? AND nb_adultes >= ? AND nb_enfants >= ?";
 
             try (Connection conn = DriverManager.getConnection(url, user, password);
                  PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -103,8 +103,10 @@ public class Logements {
                     double prix = rs.getDouble("prix_par_nuit");
                     String imagePath = rs.getString("image");
                     String description = rs.getString("description");
+                    int nbEtoiles = rs.getInt("nb_etoiles");
+                    String repas = rs.getString("repas");
 
-                    VBox card = creerCarteLogement(stage, nom, adresse, prix, imagePath, description, id);
+                    VBox card = creerCarteLogement(stage, nom, adresse, prix, imagePath, description, id, nbEtoiles, repas);
                     logementsPane.getChildren().add(card);
                 }
 
@@ -130,7 +132,7 @@ public class Logements {
         String user = "root";
         String password = "";
 
-        String sql = "SELECT id, nom, adresse, prix_par_nuit, image, description FROM hebergement";
+        String sql = "SELECT id, nom, adresse, prix_par_nuit, image, description, nb_etoiles, repas FROM hebergement";
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -143,8 +145,10 @@ public class Logements {
                 double prix = rs.getDouble("prix_par_nuit");
                 String imagePath = rs.getString("image");
                 String description = rs.getString("description");
+                int nbEtoiles = rs.getInt("nb_etoiles");
+                String repas = rs.getString("repas");
 
-                VBox card = creerCarteLogement(stage, nom, adresse, prix, imagePath, description, id);
+                VBox card = creerCarteLogement(stage, nom, adresse, prix, imagePath, description, id, nbEtoiles, repas);
                 logementsPane.getChildren().add(card);
             }
 
@@ -153,7 +157,7 @@ public class Logements {
         }
     }
 
-    private VBox creerCarteLogement(Stage parentStage, String titre, String adresse, double prix, String imagePath, String description, int hebergementId) {
+    private VBox creerCarteLogement(Stage parentStage, String titre, String adresse, double prix, String imagePath, String description, int hebergementId, int nbEtoiles, String repas) {
         Image image = new Image(new File(imagePath).toURI().toString());
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(320);
@@ -166,7 +170,25 @@ public class Logements {
         Label prixLabel = new Label(prix + " € / nuit");
         prixLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: green;");
 
-        VBox box = new VBox(imageView, titreLabel, adresseLabel, prixLabel);
+        // Étoiles dorées
+        HBox starsBox = new HBox(2);
+        for (int i = 0; i < nbEtoiles; i++) {
+            Label star = new Label("⭐");
+            star.setStyle("-fx-font-size: 14px;");
+            starsBox.getChildren().add(star);
+        }
+
+        // Etiquette repas
+        Label repasLabel = new Label(repas);
+        repasLabel.setStyle("""
+            -fx-background-color: #FFD700;
+            -fx-text-fill: black;
+            -fx-font-size: 12px;
+            -fx-padding: 2 6 2 6;
+            -fx-background-radius: 5px;
+        """);
+
+        VBox box = new VBox(imageView, titreLabel, starsBox, adresseLabel, repasLabel, prixLabel);
         box.setSpacing(5);
         box.setPadding(new Insets(5));
         box.setStyle("-fx-border-color: #dddddd; -fx-border-width: 1px; -fx-border-radius: 5px;");
